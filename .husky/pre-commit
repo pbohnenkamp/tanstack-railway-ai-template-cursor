@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
 set -e
 
-# Match CI lint job: write/fix first, then fail if a tool errored or
-# left unstaged changes that still need to be added.
+# Match CI quality gates: write/fix first, then fail if a tool errored or
+# left unstaged changes that still need to be added. Typecheck fails the
+# commit on errors (it does not rewrite files).
 
 fail_if_dirty() {
   tool="$1"
@@ -23,3 +24,6 @@ fail_if_dirty "Prettier"
 echo "pre-commit: eslint --fix"
 pnpm exec eslint --fix
 fail_if_dirty "ESLint"
+
+echo "pre-commit: pnpm typecheck"
+pnpm typecheck
