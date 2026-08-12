@@ -119,6 +119,8 @@ hosted environments as real.
 
 - [ ] Create one Railway project with three environments: `dev`, `stage`,
       `production`
+- [ ] Confirm the build uses **Node 22+** (`.node-version` / `engines.node` —
+      Vite 8 fails on Node 18 with `styleText` missing from `node:util`)
 - [ ] Provision Postgres (or attach) per environment; set `DATABASE_URL` on each
       app service environment
 - [ ] Set Clerk keys (and any other app secrets) on each Railway environment —
