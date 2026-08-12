@@ -59,14 +59,10 @@ const fuzzyFilter: FilterFn<FuzzyFeatures, Person> = (
 }
 
 const fuzzySort: SortFn<FuzzyFeatures, Person> = (rowA, rowB, columnId) => {
-  let dir = 0
-
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId].itemRank as RankingInfo,
-      rowB.columnFiltersMeta[columnId].itemRank as RankingInfo,
-    )
-  }
+  const dir = compareItems(
+    rowA.columnFiltersMeta[columnId].itemRank as RankingInfo,
+    rowB.columnFiltersMeta[columnId].itemRank as RankingInfo,
+  )
 
   return dir === 0 ? sortFn_alphanumeric(rowA, rowB, columnId) : dir
 }

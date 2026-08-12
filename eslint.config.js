@@ -18,7 +18,14 @@ export default [
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      'storybook-static/**',
+      '.output/**',
+      '.tanstack/**',
+      '.nitro/**',
+    ],
   },
   ...storybook.configs['flat/recommended'],
 ]

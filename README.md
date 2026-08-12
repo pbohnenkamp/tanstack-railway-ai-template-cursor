@@ -61,9 +61,10 @@ pnpm format
 pnpm check
 ```
 
-A Husky **pre-commit** hook runs `prettier --write .` and **fails the commit** if
-Prettier errors or if any files were reformatted (stage those changes and commit
-again). This keeps local commits aligned with the CI lint job’s `pnpm check`.
+A Husky **pre-commit** hook runs `prettier --write .`, `eslint --fix`, and
+`pnpm typecheck`. It **fails the commit** if any tool errors, or if Prettier /
+ESLint reformats files (stage those changes and commit again). This keeps local
+commits aligned with the CI lint and typecheck jobs.
 
 ## Deploy with Nitro
 
