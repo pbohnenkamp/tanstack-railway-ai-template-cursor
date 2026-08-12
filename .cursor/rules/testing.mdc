@@ -1,0 +1,34 @@
+---
+description: Testing pyramid — unit-majority, app_test integration, Playwright e2e; no Gherkin or Testcontainers
+globs: "{**/vitest.*.ts,playwright.config.ts,playwright.smoke.config.ts,tests/**/*,src/**/*.test.ts}"
+alwaysApply: false
+---
+
+# Testing conventions (ADR-0006)
+
+## Pyramid
+
+- **Unit** (`pnpm test` / `test:watch`): schemas, `*.domain.ts`, `authed`, pure helpers.
+  Colocate as `src/**/*.test.ts`. No database.
+- **Integration** (`pnpm test:integration`): call `*.handlers.ts` against Postgres
+  database **`app_test`** (Compose locally; GHA service in CI). Never target `app`.
+- **Storybook** (`pnpm test:storybook`): component interaction / a11y.
+- **E2E** (`pnpm test:e2e`): thin user journeys; Playwright, no playwright-bdd.
+- **Smoke** (`pnpm test:smoke`): read-only checks against deployed `APP_URL` (ADR-0007).
+
+## Do
+
+- Document features under `tests/integration/features/<name>/` and
+  `tests/e2e/features/<name>/` with a short README + Given/When/Then comments.
+- Extract growing rules into `*.domain.ts` so unit tests stay the majority.
+- Reset `app_test` between integration tests (truncate / transaction helpers).
+- Keep smoke tests read-only — never mutate shared hosted environments.
+
+## Do not
+
+- Use Testcontainers, Cucumber, or playwright-bdd in this template.
+- Point integration `DATABASE_URL` at the long-lived `app` database.
+- Invoke `createServerFn` results from tests — call handlers instead (ADR-0005).
+- Mock Postgres in unit tests to fake SQL coverage.
+
+See `docs/testing-strategy.md`, `docs/adr/0006-testing-strategy.md`, and `docs/ci-cd.md`.

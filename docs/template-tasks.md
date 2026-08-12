@@ -1,0 +1,5 @@
+- CI/CD
+- Arch/ADR enforcement tests
+- Testing
+- Storybook
+- Linting/Prettier git hooks

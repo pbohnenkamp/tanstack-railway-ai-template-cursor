@@ -1,0 +1,28 @@
+# Local development database. Deployed environments use Railway (or another
+# managed) Postgres and never read this file. See docs/adr/0004.
+#
+# `pnpm db:up` starts it; `pnpm db:reset` destroys the volume and rebuilds from
+# migrations. Works with `podman compose` or `docker compose`.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    # Host port is deliberately not 5432: a machine running several projects
+    # (or a general-purpose local Postgres) will already have that bound.
+    # Bump this and DATABASE_URL together if 5433 is also taken.
+    ports:
+      - '5434:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d app']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

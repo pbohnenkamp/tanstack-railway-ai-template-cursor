@@ -1,0 +1,8 @@
+/* Storybook docs auto-sizes preview iframes from content height.
+   App full-page min-heights blow those iframes up — reset them here only. */
+html,
+body,
+#storybook-root {
+  min-height: 0 !important;
+  height: auto !important;
+}

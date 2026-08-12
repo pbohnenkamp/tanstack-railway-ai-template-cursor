@@ -1,0 +1,50 @@
+---
+description: UI stack conventions — Tailwind v4, shadcn/ui, and shared components
+globs: src/**/*.{tsx,css}
+alwaysApply: false
+---
+
+# UI conventions
+
+- Styling: **Tailwind CSS v4** via `@tailwindcss/vite` and `src/styles.css`.
+- Components: **shadcn/ui** under `src/components/ui/`. Prefer existing primitives
+  (`Button`, `Input`, etc.) before adding new ones.
+- Add or update shadcn components with the latest CLI — do not copy outdated
+  snippets by hand:
+
+```bash
+pnpm dlx shadcn@latest add button
+```
+
+- Use `cn()` from `src/lib/utils.ts` for class merging.
+- App shell lives in `Header` / `Footer` / theme toggle — rebrand there rather
+  than introducing a parallel layout system.
+- Keep demo-only UI under `src/routes/demo/**` or clearly named `demo.*` files.
+
+## Color tokens (shadcn only)
+
+- Colors come **only** from the shadcn token set defined in `src/styles.css`
+  (`:root` / `.dark`): `background`, `foreground`, `card`, `popover`, `primary`,
+  `secondary`, `muted`, `accent`, `destructive`, `border`, `input`, `ring`,
+  `chart-*`, `sidebar-*`, and `radius`.
+- Style with the Tailwind utilities those tokens back — e.g. `bg-primary`,
+  `text-muted-foreground`, `border`, `bg-card`, `ring-ring`.
+- Do **not** introduce a parallel palette: no custom `--brand-*` / theme CSS
+  variables beside the shadcn set, no raw Tailwind color scales (`neutral-*`,
+  `blue-*`, …), and no arbitrary hex / `rgb()` / `oklch()` colors in components.
+- Rebrand by editing the existing token values in `src/styles.css`, not by
+  inventing new token names or a second theme layer.
+- Prefer `#/components/ui/*` primitives before hand-rolled controls that need
+  their own color rules.
+
+## Storybook
+
+- Co-locate `*.stories.tsx` next to the component (`button.tsx` →
+  `button.stories.tsx`). Titles: `UI/…`, `Shell/…`, `Feature/…`.
+- Preview loads `src/styles.css` and a light/dark toolbar (`html.dark`). Verify
+  both themes when changing tokens or variants.
+- Story meaningful product states; mock callbacks with `fn()`. Do not put
+  Clerk, server functions, or full routes in stories by default.
+- Interaction examples live on `UI/Button` (`Clicked`, `Disabled` play
+  functions). Run with `pnpm test:storybook`.
+- Workflow: `docs/storybook-workflow.md`.

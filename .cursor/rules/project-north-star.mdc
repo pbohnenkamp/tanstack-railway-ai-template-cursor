@@ -1,0 +1,61 @@
+---
+description: Template purpose, locked stack, and how agents should extend this repo
+alwaysApply: true
+---
+
+# Project north star
+
+This repository is an **application template** for quickly starting new apps with
+a familiar, predetermined architecture and design — not a one-off product.
+
+Agents should treat every change as either:
+
+1. **Improving the template** (reusable patterns, demos, docs, checklist), or
+2. **Bootstrapping a new app from it** (complete `TEMPLATE_CHECKLIST.md` first)
+
+Prefer extending existing patterns over inventing parallel ones.
+
+## Locked stack
+
+- **TanStack Start** (Vite) with file-based **TanStack Router**
+- **Server functions** as the data-access layer (`createServerFn`, ADR-0005) —
+  Start middleware in `src/start.ts`
+- **Clerk** for auth (`src/integrations/clerk/`) — bypass when keys are missing
+- **Drizzle + Postgres** for persistence (`src/db/`) — local via
+  `compose.yaml`, Railway (or other managed) Postgres in higher envs
+  (ADR-0003, ADR-0004)
+- **TanStack Query** for client/server async data
+- **TanStack Form / Table** where demos already establish the pattern
+- **Tailwind CSS v4 + shadcn/ui** for UI (`src/components/ui/`) — shadcn
+  tokens only (no second color system; see `ui-conventions`)
+- **Nitro** for production Node deploy (e.g. Railway)
+
+Use `#/*` imports for `src/*`. Follow TanStack Intent guidance in `AGENTS.md`
+before inventing Start/Router/Table APIs.
+
+## Architecture boundaries
+
+| Area | Location | Notes |
+|------|----------|-------|
+| Routes | `src/routes/` | File routes; keep product pages thin |
+| Auth UX | `_authenticated`, `/sign-in` | Redirects only — not the security boundary |
+| Server auth | `src/lib/server-auth.ts` | `authed` + per-query `userId` scope (ADR-0002) |
+| Demos | `src/routes/demo/**` | Examples — optional/replaceable, not product core |
+| Integrations | `src/integrations/` | Third-party providers (Clerk, Query, …) |
+| DB | `src/db/`, `drizzle/`, `compose.yaml` | Schema source of truth + migrations (ADR-0003); local container (ADR-0004) |
+| UI primitives | `src/components/ui/` | shadcn only; add via CLI, don't hand-roll |
+| Storybook | `.storybook/`, co-located `*.stories.tsx` | Component workshop; see `docs/storybook-workflow.md` |
+| App chrome | `Header`, `Footer`, theme | Shared shell — rebrand, don't fork casually |
+
+## Agent defaults
+
+- Match existing file layout, naming, and import style before adding new folders.
+- Keep template demos self-contained under `demo/`; put real product features
+  outside `demo/` once an app is being built from the template.
+- Server functions that touch user data must use `authed` and row-level
+  `userId` constraints — never rely on `_authenticated` alone (ADR-0002).
+- Do not remove Clerk bypass behavior without updating `TEMPLATE_CHECKLIST.md`
+  and `template-setup` rule docs.
+- Do not add a second auth, ORM, CSS, component, or color-token system
+  alongside the locked stack.
+- When unsure, read nearby code and the checklist — preserve predictability over novelty.

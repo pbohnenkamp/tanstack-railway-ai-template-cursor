@@ -1,0 +1,60 @@
+---
+description: Auth boundary for server functions — use authed, scope rows by userId; route guards are UX only
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Server-function authorization (ADR-0002)
+
+Route guards (`_authenticated`, `beforeLoad` redirects) are **UX only**. Server
+functions are RPC endpoints reachable without matching a route.
+
+## Rule
+
+Every server function that touches user data MUST:
+
+1. Obtain `userId` from `authed` (`src/lib/server-auth.ts`)
+2. Constrain every query/mutation with that `userId`
+
+`authed` authenticates. It does **not** authorize rows — put `eq(table.userId, userId)`
+(or equivalent) in the same expression that reads or writes.
+
+## Pattern
+
+Put auth in the **handler** module; keep `createServerFn` wiring thin (ADR-0005):
+
+```ts
+// items.handlers.ts
+export const findItem = authed(
+  async ({ data, userId }: { data: { id: number }; userId: string }) =>
+    await db
+      .select()
+      .from(items)
+      .where(and(eq(items.id, data.id), eq(items.userId, userId))),
+)
+
+// items.ts
+export const getItem = createServerFn({ method: 'GET' })
+  .validator(itemIdSchema)
+  .handler(findItem)
+```
+
+## Do not
+
+```ts
+// ❌ BAD — auth() inlined, easy to omit; no row scope
+.handler(async ({ data }) => {
+  const { userId } = await auth()
+  if (!userId) throw new Error('Unauthorized')
+  return db.select().from(items).where(eq(items.id, data.id))
+})
+
+// ❌ BAD — trusting _authenticated / beforeLoad as the security boundary
+```
+
+Public demos (e.g. `/demo/drizzle` todos under `src/lib/demo/`) may omit `authed`
+only when the table has no owner and the data is intentionally shared. Product
+features must not copy that shortcut.
+
+See `docs/adr/0002-enforce-authorization-in-server-functions.md` and
+`.cursor/rules/server-functions-data-access.mdc`.

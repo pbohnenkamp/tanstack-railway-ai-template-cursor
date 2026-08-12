@@ -1,0 +1,13 @@
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm run build"
+
+[deploy]
+# Applies pending Drizzle migrations before the new container starts serving.
+# Schema is owned by src/db/schema.ts; see docs/adr/0003.
+preDeployCommand = ["pnpm db:migrate"]
+startCommand = "pnpm run start"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10

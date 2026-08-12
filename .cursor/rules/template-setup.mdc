@@ -1,0 +1,42 @@
+---
+description: First-run template setup checklist for developers and agents
+alwaysApply: true
+---
+
+# Template setup
+
+This repo is an application **template** (see `project-north-star`). When creating
+or bootstrapping a new app from it, open and complete `TEMPLATE_CHECKLIST.md` at
+the repository root.
+
+## Clerk bypass
+
+If `VITE_CLERK_PUBLISHABLE_KEY` / `CLERK_SECRET_KEY` are missing or invalid:
+
+- Auth middleware and `<ClerkProvider>` are skipped
+- A **Clerk bypass** banner is shown in the UI
+- The server logs a **CRITICAL** Clerk warning
+- `fetchSession` returns `userId: null`; `authed` rejects callers
+- `_authenticated` redirects to `/sign-in` (configure Clerk before using it)
+
+That is intentional for local exploration. Configure Clerk (checklist section 2)
+before implementing protected features or deploying.
+
+User-owned data must still use `authed` + row `userId` scope — see
+`docs/adr/0002` and `server-function-auth` rule. Do not skip that pattern because
+bypass is active.
+
+## Local database
+
+Postgres for local development comes from `compose.yaml` (Compose Spec). Higher
+environments set `DATABASE_URL` to Railway (or other managed) Postgres and never
+use the compose file.
+
+```bash
+pnpm db:up      # start container, wait for health
+pnpm db:setup   # migrate + seed
+```
+
+`src/db/schema.ts` is the schema source of truth; generated migrations in
+`drizzle/` are how changes reach any shared database (ADR-0003). Do not put DDL
+in compose init scripts or a second schema file.

@@ -1,0 +1,60 @@
+---
+description: Use createServerFn as the data-access layer — wiring, handlers, Zod validators; not API routes
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Server functions as data access (ADR-0005)
+
+Prefer `createServerFn` over API routes / `fetch` wrappers for app CRUD.
+
+## Layout (per resource)
+
+| File | Contents |
+|---|----|
+| `src/lib/<resource>.ts` | Wiring only: method → `.validator` → `.handler` |
+| `src/lib/<resource>.handlers.ts` | Plain async handlers (wrap with `authed` when owned) |
+| `src/lib/<resource>.schemas.ts` | Zod input schemas — do not import `#/db` |
+
+Demos that ship with the template use the same split under `src/lib/demo/`.
+
+Do **not** use `*.server.ts` for this surface — import protection blocks those imports from client
+routes. Do **not** define `createServerFn` inline in route files for anything meant as a pattern.
+
+## Pattern
+
+```ts
+// items.schemas.ts
+export const itemIdSchema = z.object({ id: z.number() })
+
+// items.handlers.ts
+export const findItem = authed(
+  async ({ data, userId }: { data: { id: number }; userId: string }) =>
+    await db
+      .select()
+      .from(items)
+      .where(and(eq(items.id, data.id), eq(items.userId, userId))),
+)
+
+// items.ts
+export const getItem = createServerFn({ method: 'GET' })
+  .validator(itemIdSchema)
+  .handler(findItem)
+```
+
+Call site: `getItem({ data: { id } })`.
+
+## Do not
+
+```ts
+// ❌ BAD — CRUD as a REST route + fetch
+export const Route = createFileRoute('/api/items')({
+  server: { handlers: { GET: async () => Response.json(...) } },
+})
+
+// ❌ BAD — createServerFn + DB query colocated in the route module
+const getItems = createServerFn().handler(async () => db.select().from(items))
+```
+
+Auth rules for owned data: `.cursor/rules/server-function-auth.mdc` and ADR-0002.
+See `docs/adr/0005-server-functions-as-data-access-layer.md`.
