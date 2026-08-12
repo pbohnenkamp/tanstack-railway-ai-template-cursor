@@ -84,6 +84,10 @@ pending Drizzle migrations apply before the new container serves traffic. Provis
 a Railway Postgres plugin/service, set `DATABASE_URL` on the app from that
 service, and deploy. See [ADR-0003](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 
+The app requires **Node 22+** (Vite 8 / Nitro). Nixpacks picks that up from
+[`.node-version`](./.node-version) and `package.json` `engines.node` — same major
+as GitHub Actions CI.
+
 For trunk-based GitHub Actions CI/CD (lint, tests, CodeQL, auto-deploy `main`→`dev`,
 manual promote to stage/production, post-deploy smoke), see
 [`docs/ci-cd.md`](./docs/ci-cd.md) and [ADR-0007](./docs/adr/0007-ci-cd-trunk-based.md).
