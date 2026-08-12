@@ -34,7 +34,8 @@
     "db:studio": "drizzle-kit studio",
     "start": "node .output/server/index.mjs",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@clerk/tanstack-react-start": "^1.4.21",
@@ -87,6 +88,7 @@
     "@vitest/coverage-v8": "latest",
     "eslint": "^9.20.0",
     "eslint-plugin-storybook": "^10.5.7",
+    "husky": "^9.1.7",
     "playwright": "1.62.1",
     "prettier": "^3.8.1",
     "storybook": "^10.5.7",

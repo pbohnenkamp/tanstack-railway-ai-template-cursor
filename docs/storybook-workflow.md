@@ -19,11 +19,11 @@ pnpm exec playwright install chromium
 
 ## What belongs in Storybook
 
-| In Storybook | Out of Storybook |
-| --- | --- |
-| `src/components/ui/*` (shadcn primitives) | Routes, loaders, server functions |
-| Shared shell pieces as components (`ThemeToggle`, etc.) | Full Clerk / auth flows |
-| Product UI extracted from routes | Multi-step app journeys (prefer e2e later) |
+| In Storybook                                            | Out of Storybook                           |
+| ------------------------------------------------------- | ------------------------------------------ |
+| `src/components/ui/*` (shadcn primitives)               | Routes, loaders, server functions          |
+| Shared shell pieces as components (`ThemeToggle`, etc.) | Full Clerk / auth flows                    |
+| Product UI extracted from routes                        | Multi-step app journeys (prefer e2e later) |
 
 Demo routes under `src/routes/demo/**` stay optional living examples in the app;
 prefer Storybook for reusable component states.
@@ -75,12 +75,12 @@ export const Clicked: Story = {
 
 ## Quality gates
 
-| Layer | Use for |
-| --- | --- |
+| Layer                                                        | Use for                                   |
+| ------------------------------------------------------------ | ----------------------------------------- |
 | `pnpm test:storybook` (Vitest + Playwright via addon-vitest) | Render / interaction / a11y on components |
-| `pnpm test` (unit Vitest) | Pure logic, validators, `authed` boundary |
-| `pnpm test:integration` | Handlers ↔ Postgres (`app_test`) |
-| `pnpm test:e2e` (Playwright) | Auth, navigation, multi-step app journeys |
+| `pnpm test` (unit Vitest)                                    | Pure logic, validators, `authed` boundary |
+| `pnpm test:integration`                                      | Handlers ↔ Postgres (`app_test`)          |
+| `pnpm test:e2e` (Playwright)                                 | Auth, navigation, multi-step app journeys |
 
 Full pyramid, DB isolation, and workflows: [`docs/testing-strategy.md`](./testing-strategy.md)
 (ADR-0006).

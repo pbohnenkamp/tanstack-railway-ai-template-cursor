@@ -16,7 +16,8 @@ export default function ClerkNotConfiguredBanner() {
         <p className="m-0 min-w-0 flex-1 leading-snug text-muted-foreground">
           Authentication is disabled because Clerk is not configured. Example
           pages stay navigable for local template exploration — configure keys
-          in <code className="rounded-sm bg-background px-1.5 py-0.5 text-[0.85em]">
+          in{' '}
+          <code className="rounded-sm bg-background px-1.5 py-0.5 text-[0.85em]">
             .env.local
           </code>{' '}
           before shipping. See{' '}

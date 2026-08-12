@@ -53,15 +53,17 @@ If you prefer not to use Tailwind CSS:
 
 ## Linting & Formatting
 
-
 This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
 
 ```bash
-npm run lint
-npm run format
-npm run check
+pnpm lint
+pnpm format
+pnpm check
 ```
 
+A Husky **pre-commit** hook runs `prettier --write .` and **fails the commit** if
+Prettier errors or if any files were reformatted (stage those changes and commit
+again). This keeps local commits aligned with the CI lint job’s `pnpm check`.
 
 ## Deploy with Nitro
 
@@ -88,7 +90,6 @@ Complete [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) §7 when bootstrappi
 new app.
 
 For other host-specific presets and tuning, see https://v3.nitro.build/deploy.
-
 
 ## Shadcn
 
@@ -118,7 +119,6 @@ pnpm test:smoke       # read-only checks against SMOKE_BASE_URL / APP_URL
 `UI/Button` includes example `play` tests (`Clicked`, `Disabled`). See
 [docs/storybook-workflow.md](./docs/storybook-workflow.md) for conventions and
 when to use Storybook vs unit/e2e tests.
-
 
 ## Setting up Clerk
 
@@ -203,8 +203,6 @@ Clerk's [TanStack Start docs](https://clerk.com/docs/tanstack-react-start/gettin
 - Use production keys from a dedicated production Clerk instance.
 - Configure the production domain and any social connections in the Clerk dashboard.
 
-
-
 ## Routing
 
 This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
@@ -222,7 +220,7 @@ Now that you have two routes you can use a `Link` component to navigate between 
 To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
 
 ```tsx
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 ```
 
 Then anywhere in your JSX you can use it like so:
@@ -290,11 +288,11 @@ const getServerTime = createServerFn({
 // Use in a component
 function MyComponent() {
   const [time, setTime] = useState('')
-  
+
   useEffect(() => {
     getServerTime().then(setTime)
   }, [])
-  
+
   return <div>Server time: {time}</div>
 }
 ```
@@ -347,11 +345,9 @@ function PeopleComponent() {
 
 Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
 
-
 # Demo files
 
 Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
 
 # Learn More
 

@@ -55,14 +55,14 @@ has a limit, not by default.
 
 ## Where database artifacts live
 
-| Path | Contents |
-|---|---|
-| [`src/db/schema.ts`](../../src/db/schema.ts) | Table definitions. The source of truth. Types are inferred from here. |
-| [`drizzle/`](../../drizzle/) | Generated migration SQL. Committed and reviewed; never edited by hand. |
-| `drizzle/meta/` | Drizzle's snapshots and journal. Generated; committed; how the next diff is computed. |
-| [`drizzle.config.ts`](../../drizzle.config.ts) | Points drizzle-kit at the schema, the output directory, and `DATABASE_URL`. |
-| [`scripts/seed.ts`](../../scripts/seed.ts) | Development seed data, typed against the schema. |
-| [`src/db/index.ts`](../../src/db/index.ts) | The Drizzle client the application imports. |
+| Path                                           | Contents                                                                              |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`src/db/schema.ts`](../../src/db/schema.ts)   | Table definitions. The source of truth. Types are inferred from here.                 |
+| [`drizzle/`](../../drizzle/)                   | Generated migration SQL. Committed and reviewed; never edited by hand.                |
+| `drizzle/meta/`                                | Drizzle's snapshots and journal. Generated; committed; how the next diff is computed. |
+| [`drizzle.config.ts`](../../drizzle.config.ts) | Points drizzle-kit at the schema, the output directory, and `DATABASE_URL`.           |
+| [`scripts/seed.ts`](../../scripts/seed.ts)     | Development seed data, typed against the schema.                                      |
+| [`src/db/index.ts`](../../src/db/index.ts)     | The Drizzle client the application imports.                                           |
 
 Applied migrations are tracked by Drizzle in a `drizzle.__drizzle_migrations` table inside the
 database itself, which is what makes `db:migrate` safe to re-run.

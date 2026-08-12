@@ -6,13 +6,13 @@ unit tests cannot; they are not the default TDD surface. See
 
 ## Layers
 
-| Layer | Command | What it covers |
-| --- | --- | --- |
-| Unit | `pnpm test` / `pnpm test:watch` | Zod schemas, `*.domain.ts`, `authed`, pure helpers |
-| Integration | `pnpm test:integration` | Handlers ↔ real Postgres (`app_test`) |
-| Storybook | `pnpm test:storybook` | Component render, interaction, a11y |
-| E2E | `pnpm test:e2e` | Multi-step journeys in a real browser |
-| Smoke | `pnpm test:smoke` | Read-only checks against a deployed `APP_URL` |
+| Layer       | Command                         | What it covers                                     |
+| ----------- | ------------------------------- | -------------------------------------------------- |
+| Unit        | `pnpm test` / `pnpm test:watch` | Zod schemas, `*.domain.ts`, `authed`, pure helpers |
+| Integration | `pnpm test:integration`         | Handlers ↔ real Postgres (`app_test`)              |
+| Storybook   | `pnpm test:storybook`           | Component render, interaction, a11y                |
+| E2E         | `pnpm test:e2e`                 | Multi-step journeys in a real browser              |
+| Smoke       | `pnpm test:smoke`               | Read-only checks against a deployed `APP_URL`      |
 
 `pnpm test:all` runs unit, integration, storybook, then e2e.
 
@@ -29,11 +29,11 @@ unit tests cannot; they are not the default TDD surface. See
 
 ## Databases
 
-| Database | Purpose |
-| --- | --- |
-| `app` (Compose, port 5434) | Manual / `pnpm dev` / e2e against the running app |
-| `app_test` (same Compose server) | Integration tests only |
-| GHA Postgres service | CI integration (ephemeral job DB) |
+| Database                         | Purpose                                           |
+| -------------------------------- | ------------------------------------------------- |
+| `app` (Compose, port 5434)       | Manual / `pnpm dev` / e2e against the running app |
+| `app_test` (same Compose server) | Integration tests only                            |
+| GHA Postgres service             | CI integration (ephemeral job DB)                 |
 
 Integration global setup creates `app_test` if missing, migrates it, and **refuses**
 to run if `DATABASE_URL` points at database `app`.
@@ -77,12 +77,12 @@ describe('create todo', () => {
 
 ## What to unit-test vs integrate
 
-| Prefer unit | Prefer integration |
-| --- | --- |
-| Zod schemas | Handler queries and inserts |
-| Pure `*.domain.ts` rules | Constraints, cascades, transactions |
-| `authed` with mocked Clerk | Row scope against a real DB |
-| Sorting / filtering helpers | Migration-applied schema shape |
+| Prefer unit                 | Prefer integration                  |
+| --------------------------- | ----------------------------------- |
+| Zod schemas                 | Handler queries and inserts         |
+| Pure `*.domain.ts` rules    | Constraints, cascades, transactions |
+| `authed` with mocked Clerk  | Row scope against a real DB         |
+| Sorting / filtering helpers | Migration-applied schema shape      |
 
 Do **not** mock Postgres in unit tests to “cover” SQL. Call plain handlers from
 integration tests (ADR-0005) — not `createServerFn` wiring.

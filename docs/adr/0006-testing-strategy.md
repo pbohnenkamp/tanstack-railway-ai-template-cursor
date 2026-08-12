@@ -33,13 +33,13 @@ for manual exploration (`pnpm db:up` + `pnpm dev`).
 **Chosen: option 2 — unit-majority; Compose database `app_test` locally; GHA Postgres
 service in CI; no Testcontainers; no Gherkin/playwright-bdd.**
 
-| Layer | Runner | Database |
-| --- | --- | --- |
-| Unit | Vitest (`vitest.unit.config.ts`) | None |
-| Integration | Vitest (`vitest.integration.config.ts`) | Local: Compose `app_test`; CI: GHA service |
-| Component | Storybook + Vitest browser | None |
-| E2E | Playwright | Compose `app` (running app) |
-| Smoke (post-deploy) | Playwright (`playwright.smoke.config.ts`) | Live `APP_URL` — read-only only |
+| Layer               | Runner                                    | Database                                   |
+| ------------------- | ----------------------------------------- | ------------------------------------------ |
+| Unit                | Vitest (`vitest.unit.config.ts`)          | None                                       |
+| Integration         | Vitest (`vitest.integration.config.ts`)   | Local: Compose `app_test`; CI: GHA service |
+| Component           | Storybook + Vitest browser                | None                                       |
+| E2E                 | Playwright                                | Compose `app` (running app)                |
+| Smoke (post-deploy) | Playwright (`playwright.smoke.config.ts`) | Live `APP_URL` — read-only only            |
 
 Handlers under `*.handlers.ts` are the integration entry point (ADR-0005) — never
 invoke `createServerFn` outside the Start runtime. Growing business rules move into

@@ -42,11 +42,11 @@ dispatches through the Start runtime and cannot be invoked directly.
 
 **Module layout** (per resource):
 
-| File | Role |
-|---|---|
-| `src/lib/<resource>.ts` | RPC wiring — `createServerFn` + `.validator` + `.handler` only |
-| `src/lib/<resource>.handlers.ts` | Plain async functions (often wrapped in `authed`) |
-| `src/lib/<resource>.schemas.ts` | Zod input contracts (no `#/db` import) |
+| File                             | Role                                                           |
+| -------------------------------- | -------------------------------------------------------------- |
+| `src/lib/<resource>.ts`          | RPC wiring — `createServerFn` + `.validator` + `.handler` only |
+| `src/lib/<resource>.handlers.ts` | Plain async functions (often wrapped in `authed`)              |
+| `src/lib/<resource>.schemas.ts`  | Zod input contracts (no `#/db` import)                         |
 
 Demo resources that are intentionally replaceable live under `src/lib/demo/` with the same split —
 see [`src/lib/demo/todos.ts`](../../src/lib/demo/todos.ts).

@@ -57,10 +57,10 @@ volume, a healthcheck, and a **host port of 5434** — 5432 is routinely already
 project or a general-purpose local Postgres, and a template that assumes exclusivity collides on
 first use.
 
-| Command | Effect |
-|---|---|
-| `pnpm db:up` | Starts the container and waits for the healthcheck |
-| `pnpm db:down` | Stops it, keeping the volume |
+| Command         | Effect                                                         |
+| --------------- | -------------------------------------------------------------- |
+| `pnpm db:up`    | Starts the container and waits for the healthcheck             |
+| `pnpm db:down`  | Stops it, keeping the volume                                   |
 | `pnpm db:reset` | Destroys the volume, restarts, re-applies migrations and seeds |
 
 `pnpm db:reset` is safe and expected: local data is disposable, and rebuilding from

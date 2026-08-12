@@ -6,7 +6,9 @@ describe('create todo', () => {
   it('persists a title for later listing', async () => {
     // Given an empty todos table
     // When insertTodo is called with a valid title
-    const result = await insertTodo({ data: { title: 'Ship testing scaffold' } })
+    const result = await insertTodo({
+      data: { title: 'Ship testing scaffold' },
+    })
 
     // Then the handler reports success and listTodos returns that row
     expect(result).toEqual({ success: true })

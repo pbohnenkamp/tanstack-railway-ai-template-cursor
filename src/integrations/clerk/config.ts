@@ -25,7 +25,9 @@ function isPlaceholder(value: string): boolean {
 export function getClerkPublishableKey(): string {
   const fromImportMeta =
     typeof import.meta !== 'undefined'
-      ? normalize(import.meta.env?.VITE_CLERK_PUBLISHABLE_KEY as string | undefined)
+      ? normalize(
+          import.meta.env?.VITE_CLERK_PUBLISHABLE_KEY as string | undefined,
+        )
       : ''
 
   if (fromImportMeta) return fromImportMeta
@@ -52,9 +54,7 @@ export function isClerkConfigured(): boolean {
 
 /** Server: both keys look real. Required before enabling clerkMiddleware. */
 export function isClerkServerConfigured(): boolean {
-  return (
-    isClerkConfigured() && isValidClerkSecretKey(getClerkSecretKey())
-  )
+  return isClerkConfigured() && isValidClerkSecretKey(getClerkSecretKey())
 }
 
 let hasLoggedClerkWarning = false

@@ -47,9 +47,7 @@ export default function Header() {
             Docs
           </a>
           <details className="relative w-full sm:w-auto">
-            <summary
-              className={`${navLinkClass} list-none cursor-pointer`}
-            >
+            <summary className={`${navLinkClass} list-none cursor-pointer`}>
               Demos
             </summary>
             <div className="mt-2 min-w-56 rounded-xl border bg-popover p-2 text-popover-foreground shadow-lg sm:absolute sm:right-0">

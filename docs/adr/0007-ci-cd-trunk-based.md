@@ -31,15 +31,15 @@ branch model.
 
 **Chosen: option 2.**
 
-| Concern | Choice |
-| --- | --- |
-| Git | Feature branches → PR → `main` |
-| CI | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) aggregator job `CI` |
-| SAST | GitHub CodeQL (`javascript-typescript`) |
-| Deploy | [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml) + Railway CLI |
-| Envs | Railway environments `dev` / `stage` / `production`, mirrored as GitHub Environments |
-| Promote | `main`→`dev` automatic; `stage` and `production` manual with prior-env SHA checks |
-| Smoke | [`tests/smoke/`](../../tests/smoke/) via `pnpm test:smoke` (no writes) |
+| Concern | Choice                                                                               |
+| ------- | ------------------------------------------------------------------------------------ |
+| Git     | Feature branches → PR → `main`                                                       |
+| CI      | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) aggregator job `CI`     |
+| SAST    | GitHub CodeQL (`javascript-typescript`)                                              |
+| Deploy  | [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml) + Railway CLI   |
+| Envs    | Railway environments `dev` / `stage` / `production`, mirrored as GitHub Environments |
+| Promote | `main`→`dev` automatic; `stage` and `production` manual with prior-env SHA checks    |
+| Smoke   | [`tests/smoke/`](../../tests/smoke/) via `pnpm test:smoke` (no writes)               |
 
 Shared `dev` is overwritten by feature-branch deploys (one active preview). Ephemeral
 preview environments are out of scope for this template.

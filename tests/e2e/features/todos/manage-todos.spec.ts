@@ -16,8 +16,7 @@ test.describe('manage todos', () => {
     await input.fill(title)
     await Promise.all([
       page.waitForResponse(
-        (response) =>
-          response.url().includes('_serverFn') && response.ok(),
+        (response) => response.url().includes('_serverFn') && response.ok(),
       ),
       page.getByRole('button', { name: 'Add Todo' }).click(),
     ])

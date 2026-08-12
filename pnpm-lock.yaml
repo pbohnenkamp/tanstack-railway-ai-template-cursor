@@ -153,6 +153,9 @@ importers:
       eslint-plugin-storybook:
         specifier: ^10.5.7
         version: 10.5.7(eslint@9.39.5(jiti@2.7.0))(storybook@10.5.7(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))(typescript@6.0.3)
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
       playwright:
         specifier: 1.62.1
         version: 1.62.1
@@ -3662,6 +3665,11 @@ packages:
 
   httpxy@0.5.5:
     resolution: {integrity: sha512-uDjmnPyp1q4Sgzf3w+J/Fc6UqcCEj0x4Wjp7OqK5dGhNeDgpyrAmnS6ey8QWrX3SWDon2DMKf9sBa5X9+CVyMA==}
+
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -8150,6 +8158,8 @@ snapshots:
   html-escaper@2.0.2: {}
 
   httpxy@0.5.5: {}
+
+  husky@9.1.7: {}
 
   ignore@5.3.2: {}
 

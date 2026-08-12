@@ -26,8 +26,8 @@ function DashboardPage() {
         </p>
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
-          You are signed in as <code className="text-foreground">{userId}</code>.
-          This layout redirect is UX only — protect data with{' '}
+          You are signed in as <code className="text-foreground">{userId}</code>
+          . This layout redirect is UX only — protect data with{' '}
           <code className="text-foreground">authed</code>.
         </p>
         <Link to="/" className={cn(buttonVariants({ variant: 'outline' }))}>

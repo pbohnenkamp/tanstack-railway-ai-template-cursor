@@ -22,14 +22,14 @@ feature branch ──CI──► PR ──CI──► main ──auto──► R
 
 ## CI jobs
 
-| Job | Command / tool |
-| --- | --- |
-| Lint | `pnpm check`, `pnpm lint` |
-| Typecheck | `pnpm typecheck` |
-| Build | `pnpm build` |
-| Unit / Integration / Storybook / E2E | existing Vitest + Playwright suites |
-| CodeQL | `github/codeql-action` (javascript-typescript) |
-| **CI** | Aggregator — require this check on `main` |
+| Job                                  | Command / tool                                 |
+| ------------------------------------ | ---------------------------------------------- |
+| Lint                                 | `pnpm check`, `pnpm lint`                      |
+| Typecheck                            | `pnpm typecheck`                               |
+| Build                                | `pnpm build`                                   |
+| Unit / Integration / Storybook / E2E | existing Vitest + Playwright suites            |
+| CodeQL                               | `github/codeql-action` (javascript-typescript) |
+| **CI**                               | Aggregator — require this check on `main`      |
 
 ## Deploy workflow
 
@@ -41,11 +41,11 @@ Push to `main` → deploy GitHub Environment `dev` → smoke tests against `APP_
 
 Actions → **Deploy** → Run workflow:
 
-| Input | Allowed refs | Prior env required |
-| --- | --- | --- |
-| `dev` | any branch | none (CI green required) |
-| `stage` | `main` only | successful GitHub Deployment of this SHA to `dev` |
-| `production` | `main` only | successful GitHub Deployment of this SHA to `stage` |
+| Input        | Allowed refs | Prior env required                                  |
+| ------------ | ------------ | --------------------------------------------------- |
+| `dev`        | any branch   | none (CI green required)                            |
+| `stage`      | `main` only  | successful GitHub Deployment of this SHA to `dev`   |
+| `production` | `main` only  | successful GitHub Deployment of this SHA to `stage` |
 
 Railway apply happens with:
 
@@ -64,13 +64,13 @@ Create Environments named exactly: `dev`, `stage`, `production`.
 
 For **each** environment, set:
 
-| Name | Type | Purpose |
-| --- | --- | --- |
-| `RAILWAY_TOKEN` | secret | Railway project/account token for CLI |
-| `RAILWAY_PROJECT_ID` | variable | Railway project id |
-| `RAILWAY_SERVICE_ID` | variable | App service id (or name) |
-| `RAILWAY_ENVIRONMENT_ID` | variable | Railway environment id (or name) |
-| `APP_URL` | variable | Public base URL for smoke tests (e.g. `https://….up.railway.app`) |
+| Name                     | Type     | Purpose                                                           |
+| ------------------------ | -------- | ----------------------------------------------------------------- |
+| `RAILWAY_TOKEN`          | secret   | Railway project/account token for CLI                             |
+| `RAILWAY_PROJECT_ID`     | variable | Railway project id                                                |
+| `RAILWAY_SERVICE_ID`     | variable | App service id (or name)                                          |
+| `RAILWAY_ENVIRONMENT_ID` | variable | Railway environment id (or name)                                  |
+| `APP_URL`                | variable | Public base URL for smoke tests (e.g. `https://….up.railway.app`) |
 
 Recommended protection:
 

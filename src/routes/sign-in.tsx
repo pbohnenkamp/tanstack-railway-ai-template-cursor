@@ -32,11 +32,13 @@ function SignInPage() {
     return (
       <main className="mx-auto flex w-full max-w-lg flex-col px-4 py-10">
         <section className="space-y-4 rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
-          <h1 className="text-2xl font-bold tracking-tight">Sign in unavailable</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Sign in unavailable
+          </h1>
           <p className="text-sm text-muted-foreground">
             Clerk is not configured, so authentication is bypassed. Set keys in{' '}
-            <code>.env.local</code> (see <code>TEMPLATE_CHECKLIST.md</code>), restart
-            the dev server, then return here.
+            <code>.env.local</code> (see <code>TEMPLATE_CHECKLIST.md</code>),
+            restart the dev server, then return here.
           </p>
           <Link to="/" className={cn(buttonVariants())}>
             Back home

@@ -50,10 +50,17 @@ function DemoDrizzle() {
 
         <ul className="mb-6 space-y-3">
           {todos.map((todo) => (
-            <li key={todo.id} className="rounded-lg border bg-background px-4 py-3">
+            <li
+              key={todo.id}
+              className="rounded-lg border bg-background px-4 py-3"
+            >
               <div className="flex items-center justify-between">
-                <span className="font-medium text-foreground">{todo.title}</span>
-                <span className="text-xs text-muted-foreground">#{todo.id}</span>
+                <span className="font-medium text-foreground">
+                  {todo.title}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  #{todo.id}
+                </span>
               </div>
             </li>
           ))}

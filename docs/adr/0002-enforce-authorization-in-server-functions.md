@@ -21,7 +21,7 @@ export const Route = createFileRoute('/_authenticated')({
 ```
 
 This is a genuine server-side redirect — it runs during SSR, so a signed-out visitor is sent to
-sign-in rather than reaching a loader. That makes it *more* convincing to read as the boundary, and
+sign-in rather than reaching a loader. That makes it _more_ convincing to read as the boundary, and
 it still is not one. It gates **route matching**, and server functions are RPC endpoints reachable
 without matching a route. Anyone can `POST` to one directly, whatever the router did or did not
 render. The guard also re-runs in the client's own router, where the visitor controls it.
@@ -42,7 +42,7 @@ Two distinct guarantees, both server-side. `authed` rejects anonymous callers, a
 predicate on every query scopes rows to the owner. A signed-in user cannot read or mutate another
 user's row by guessing an ID.
 
-The risk is that the route guard *looks* authoritative, so a contributor could reasonably add a
+The risk is that the route guard _looks_ authoritative, so a contributor could reasonably add a
 server function without an auth check, assuming the layout already handled it. That is what this
 record exists to prevent — and why the check is a construct rather than a paragraph.
 
@@ -70,7 +70,7 @@ cannot protect server functions, which are callable independently of route match
 
 Option 2 overreaches. Row-level scoping is per-table and per-statement — `eq(todos.userId,
 userId)` cannot be hoisted into anything shared without inventing a policy layer over Drizzle.
-Centralizing it in name only would leave authorization distributed while *looking* covered, which is
+Centralizing it in name only would leave authorization distributed while _looking_ covered, which is
 worse than leaving it visibly distributed.
 
 Option 3 is the same four lines in every handler. It is boilerplate, it is omissible, and nothing
@@ -108,7 +108,7 @@ code path into a handler that produces one.
 - Row scoping still has to be written correctly in each query, and each resource owes its own
   isolation tests. `authed` cannot supply them.
 - A handler that queries a table with no `userId` column will type-check and run. The wrapper
-  guarantees a caller is *authenticated*, never that a given query is *scoped*.
+  guarantees a caller is _authenticated_, never that a given query is _scoped_.
 
 ## More Information
 
