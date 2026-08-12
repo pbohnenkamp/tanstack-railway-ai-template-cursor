@@ -5,7 +5,8 @@ Trunk-based delivery for this template. See [ADR-0007](./adr/0007-ci-cd-trunk-ba
 ## Model
 
 - Feature work happens on short-lived branches off `main`.
-- Every push and every PR to `main` runs [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+- PRs into `main` and pushes to `main` run [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
+  (avoids duplicate checks when a PR branch is updated).
 - Merges to `main` require the aggregator status check named **`CI`** (configure branch protection).
 - Merge / push to `main` auto-deploys **dev** via [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml).
 - **stage** and **production** deploys are manual (`workflow_dispatch`) and must follow
