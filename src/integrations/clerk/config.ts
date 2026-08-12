@@ -26,7 +26,7 @@ export function getClerkPublishableKey(): string {
   const fromImportMeta =
     typeof import.meta !== 'undefined'
       ? normalize(
-          import.meta.env?.VITE_CLERK_PUBLISHABLE_KEY as string | undefined,
+          import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined,
         )
       : ''
 

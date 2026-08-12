@@ -1,17 +1,25 @@
 #!/usr/bin/env sh
 set -e
 
-# Match CI `pnpm check` (prettier --check .) by writing first, then failing
-# if Prettier errored or reformatted anything that still needs staging.
+# Match CI lint job: write/fix first, then fail if a tool errored or
+# left unstaged changes that still need to be added.
+
+fail_if_dirty() {
+  tool="$1"
+  if ! git diff --quiet; then
+    echo ""
+    echo "pre-commit: ${tool} updated files. Stage them and commit again:"
+    echo ""
+    git --no-pager diff --stat
+    echo ""
+    exit 1
+  fi
+}
 
 echo "pre-commit: prettier --write ."
 pnpm exec prettier --write .
+fail_if_dirty "Prettier"
 
-if ! git diff --quiet; then
-  echo ""
-  echo "pre-commit: Prettier updated files. Stage them and commit again:"
-  echo ""
-  git --no-pager diff --stat
-  echo ""
-  exit 1
-fi
+echo "pre-commit: eslint --fix"
+pnpm exec eslint --fix
+fail_if_dirty "ESLint"
