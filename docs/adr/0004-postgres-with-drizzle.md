@@ -66,8 +66,9 @@ first use.
 `pnpm db:reset` is safe and expected: local data is disposable, and rebuilding from
 `drizzle/` is the fastest way to confirm the migrations actually describe the schema.
 
-Deployed environments provide their own managed Postgres (Railway Postgres for this template) and set
-`DATABASE_URL` to it. They never read `compose.yaml`.
+Deployed environments provide their own managed Postgres (Railway Postgres for this template).
+[`.railway/railway.ts`](../../.railway/railway.ts) provisions that database and sets `DATABASE_URL`
+on the `web` service. They never read `compose.yaml`.
 
 ### The driver choice is load-bearing
 

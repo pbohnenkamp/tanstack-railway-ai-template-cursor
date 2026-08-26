@@ -106,12 +106,14 @@ The build output is a self-contained Node server under `.output/`.
 
 ### Railway
 
-[`railway.toml`](./railway.toml) runs `pnpm db:migrate` as `preDeployCommand` so
-pending Drizzle migrations apply before the new container serves traffic. Provision
-a Railway Postgres plugin/service, set `DATABASE_URL` on the app from that
-service, and deploy. See [ADR-0003](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
+[`.railway/railway.ts`](./.railway/railway.ts) is the project graph: a `web`
+service and Postgres, `DATABASE_URL` wired, and `preDeploy` running
+`pnpm db:migrate` before the new container serves traffic. Apply it with
+`railway config plan` / `railway config apply` per environment (that is not a
+code deploy). See [`.railway/README.md`](./.railway/README.md) and
+[ADR-0003](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 
-The app requires **Node 22+** (Vite 8 / Nitro). Nixpacks picks that up from
+The app requires **Node 22+** (Vite 8 / Nitro). Railpack picks that up from
 [`.node-version`](./.node-version) and `package.json` `engines.node` — same major
 as GitHub Actions CI.
 

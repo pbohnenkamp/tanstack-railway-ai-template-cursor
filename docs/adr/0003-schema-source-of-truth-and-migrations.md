@@ -90,10 +90,11 @@ until the shape settles. Nothing shared may be reached that way.
 
 **Deploying**
 
-[`railway.toml`](../../railway.toml) runs `pnpm db:migrate` as its `preDeployCommand`, so pending
-migrations are applied before the new container starts serving. A failed migration fails the release
-rather than starting an application against a schema it does not match. Higher environments set
-`DATABASE_URL` to the Railway (or other managed) Postgres service — they never use `compose.yaml`.
+[`.railway/railway.ts`](../../.railway/railway.ts) runs `pnpm db:migrate` as `preDeploy` on the
+`web` service, so pending migrations are applied before the new container starts serving. A failed
+migration fails the release rather than starting an application against a schema it does not match.
+The same file provisions Postgres and sets `DATABASE_URL` on `web`. Higher environments never use
+`compose.yaml`.
 
 ## Why seed data is not part of database startup
 
@@ -122,7 +123,7 @@ from the tables it populates. Keep it idempotent — `db:setup` is expected to b
 - More ceremony than `db:push` for every change.
 - Setting up a fresh database is two commands rather than one, because starting the engine and
   migrating it cannot happen in the same pass.
-- `preDeployCommand` runs on every deploy and can fail the release. Intended, but it means a broken
+- `preDeploy` runs on every deploy and can fail the release. Intended, but it means a broken
   migration blocks shipping anything else.
 
 ## More Information

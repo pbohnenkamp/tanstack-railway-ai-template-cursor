@@ -15,7 +15,7 @@ branch model.
 
 - Trunk-based development with PR gates on `main`.
 - One required status check that rolls up lint, types, build, tests, and SAST.
-- Railway remains the deploy target (Nitro + [`railway.toml`](../../railway.toml)).
+- Railway remains the deploy target (Nitro + [`.railway/railway.ts`](../../.railway/railway.ts)).
 - Manual promotion through stage and production; automatic deploy of `main` to `dev`.
 - Feature branches may optionally overwrite shared `dev` after CI is green.
 - Smoke tests hit the real environment URL and stay read-only.

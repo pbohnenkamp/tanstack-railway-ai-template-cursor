@@ -43,6 +43,7 @@ before inventing Start/Router/Table APIs.
 | Demos | `src/routes/demo/**` | Examples — optional/replaceable, not product core |
 | Integrations | `src/integrations/` | Third-party providers (Clerk, Query, …) |
 | DB | `src/db/`, `drizzle/`, `compose.yaml` | Schema source of truth + migrations (ADR-0003); local container (ADR-0004) |
+| Railway | `.railway/` | IaC graph (`railway.ts`); `plan`/`apply` per environment — not a code deploy |
 | UI primitives | `src/components/ui/` | shadcn only; add via CLI, don't hand-roll |
 | Storybook | `.storybook/`, co-located `*.stories.tsx` | Component workshop; see `docs/storybook-workflow.md` |
 | App chrome | `Header`, `Footer`, theme | Shared shell — rebrand, don't fork casually |
@@ -58,4 +59,6 @@ before inventing Start/Router/Table APIs.
   and `template-setup` rule docs.
 - Do not add a second auth, ORM, CSS, component, or color-token system
   alongside the locked stack.
+- Do not add `railway.toml` / `railway.json` (config-as-code). Railway
+  settings live in `.railway/railway.ts`.
 - When unsure, read nearby code and the checklist — preserve predictability over novelty.

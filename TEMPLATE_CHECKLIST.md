@@ -41,8 +41,8 @@ Keys and wiring live in:
 ## 3. Configure the database (Postgres + Drizzle)
 
 Local Postgres runs from [`compose.yaml`](./compose.yaml) (Compose Spec). Deployed
-environments set `DATABASE_URL` to Railway (or other managed) Postgres — they never
-use the compose file. See [`docs/adr/0004`](./docs/adr/0004-postgres-with-drizzle.md)
+environments use Railway Postgres from [`.railway/railway.ts`](./.railway/railway.ts)
+and never use the compose file. See [`docs/adr/0004`](./docs/adr/0004-postgres-with-drizzle.md)
 and [`docs/adr/0003`](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 
 - [ ] Ensure `.env.local` has `DATABASE_URL` matching `compose.yaml`
@@ -53,8 +53,9 @@ and [`docs/adr/0003`](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 - [ ] For schema changes that will ship: `pnpm db:generate`, review `drizzle/`, then
       `pnpm db:migrate` — commit schema + migrations together (ADR-0003)
 - [ ] Smoke-test `/demo/drizzle` or your first data route
-- [ ] For Railway: provision Postgres, set `DATABASE_URL` on the app service,
-      confirm `railway.toml` `preDeployCommand` runs `pnpm db:migrate`
+- [ ] For Railway: apply [`.railway/railway.ts`](./.railway/railway.ts)
+      (`railway config plan` / `apply`) so Postgres is provisioned,
+      `DATABASE_URL` is wired, and `preDeploy` runs `pnpm db:migrate`
 
 Scripts: `db:up` / `db:down` / `db:reset` / `db:setup` / `db:generate` /
 `db:migrate` / `db:seed` / `db:push` / `db:studio`.
@@ -119,14 +120,21 @@ hosted environments as real.
 
 - [ ] Create one Railway project with three environments: `dev`, `stage`,
       `production`
+- [ ] Install Railway CLI **5.42.1+**, then `railway login` and `railway link`
+- [ ] Confirm [`.railway/railway.ts`](./.railway/railway.ts) service names match
+      the dashboard (`web`, `postgres`) — or `railway config pull` and copy
+      settings into the live names. Applying this file as-is against differently
+      named services will create `web`/`postgres` and **delete** omitted ones
+- [ ] `railway config plan` then `railway config apply` for **each** environment
+      (apply is not a code deploy; omit means delete)
+- [ ] If a service is still owned by leftover `railway.toml`, migrate first:
+      `railway config migrate --apply --delete-files`
 - [ ] Confirm the build uses **Node 22+** (`.node-version` / `engines.node` —
       Vite 8 fails on Node 18 with `styleText` missing from `node:util`)
-- [ ] Provision Postgres (or attach) per environment; set `DATABASE_URL` on each
-      app service environment
-- [ ] Set Clerk keys (and any other app secrets) on each Railway environment —
-      production uses a production Clerk instance
-- [ ] Confirm [`railway.toml`](./railway.toml) `preDeployCommand` runs
-      `pnpm db:migrate`
+- [ ] Set Clerk keys (and any other app secrets) on the `web` service in each
+      Railway environment — not in the IaC file. Production uses a production
+      Clerk instance
+- [ ] Confirm `preDeploy` is `pnpm db:migrate`
 - [ ] Generate a public domain (or custom domain) per environment
 
 ### GitHub Environments

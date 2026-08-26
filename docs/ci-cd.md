@@ -57,7 +57,9 @@ railway up --ci \
   --environment "$RAILWAY_ENVIRONMENT_ID"
 ```
 
-[`railway.toml`](../railway.toml) still runs `pnpm db:migrate` as `preDeployCommand`.
+[`.railway/railway.ts`](../.railway/railway.ts) sets `preDeploy` to
+`pnpm db:migrate`. Apply that graph with `railway config apply` when bootstrapping
+or changing infrastructure; `railway up` only ships the build.
 
 ## GitHub Environments and secrets
 
@@ -129,7 +131,8 @@ hosted databases.
 1. One Railway **project**
 2. Three Railway **environments**: `dev`, `stage`, `production` (names can differ if
    `RAILWAY_ENVIRONMENT_ID` matches)
-3. App service + Postgres in each environment (or shared patterns you prefer); set
-   `DATABASE_URL` and Clerk keys per environment
+3. `railway link`, then `railway config plan` / `apply` per environment so
+   [`.railway/railway.ts`](../.railway/railway.ts) creates `web` + `postgres` and
+   wires `DATABASE_URL`. Set Clerk keys on `web` in the dashboard
 4. Generate a public domain per environment and copy it into GitHub `APP_URL`
 5. Create a Railway token and store it as `RAILWAY_TOKEN` on each GitHub Environment
