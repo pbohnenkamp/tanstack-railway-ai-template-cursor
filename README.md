@@ -1,11 +1,38 @@
 Welcome to your new TanStack Start app!
 
+# Creating an app
+
+Mark this repository as a GitHub template (`Settings` → `Template repository`),
+then create a new app from it:
+
+```bash
+gh repo create my-app \
+  --template pbohnenkamp/tanstack-railway-ai-template-cursor \
+  --private --clone
+```
+
+That copies the files into a new repo with a fresh git history. `origin` points
+at your app, not at this template.
+
+For a local folder with no GitHub remote yet:
+
+```bash
+git clone --depth 1 git@github.com:pbohnenkamp/tanstack-railway-ai-template-cursor.git my-app
+cd my-app
+rm -rf .git
+git init
+```
+
+Do not leave `origin` pointed at the template. Treat the copy as a snapshot;
+when the template improves, copy specific files or patterns by hand.
+
+Then work through [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) (Clerk,
+database, branding, demos, CI/CD).
+
 # Getting Started
 
-> **New app from this template?** Work through
-> [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) (Clerk, database, branding,
-> demos). Clerk auth is bypassed until real keys are configured so you can
-> explore the UI immediately.
+> Clerk auth is bypassed until real keys are configured so you can explore the
+> UI immediately. Do not ship in that state.
 
 To run this application:
 
