@@ -30,7 +30,9 @@ bypass is active.
 
 Postgres for local development comes from `compose.yaml` (Compose Spec). Higher
 environments use Railway Postgres from `.railway/railway.ts` (`DATABASE_URL` on
-`web`) and never use the compose file.
+`web`) and never use the compose file. Provision that database with
+`railway config apply`. Application deploys (`railway up`) use the database
+that apply already created.
 
 ```bash
 pnpm db:up      # start container, wait for health

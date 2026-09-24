@@ -2,6 +2,19 @@
 
 Trunk-based delivery for this template. See [ADR-0007](./adr/0007-ci-cd-trunk-based.md).
 
+Infrastructure and application deploys are separate processes. See
+[`.railway/README.md`](../.railway/README.md).
+
+- **Infrastructure** — manual `railway config plan`, then `railway config apply`,
+  once per environment at bootstrap and again only when
+  [`.railway/railway.ts`](../.railway/railway.ts) changes. Apply creates and
+  updates services, databases, and settings, including `preDeploy`
+  (`pnpm db:migrate`). Leave it as a CLI step outside the workflows below.
+- **Application deploy** — [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)
+  runs `railway up`, which ships a build of this repo. Push to `main` auto-deploys
+  **dev**. **stage** and **production** are manual. Migrations run on that deploy
+  because an earlier apply set `preDeploy`.
+
 ## Model
 
 - Feature work happens on short-lived branches off `main`.
@@ -48,7 +61,9 @@ Actions → **Deploy** → Run workflow:
 | `stage`      | `main` only  | successful GitHub Deployment of this SHA to `dev`   |
 | `production` | `main` only  | successful GitHub Deployment of this SHA to `stage` |
 
-Railway apply happens with:
+The deploy job ships the build with `railway up`. It leaves the project graph
+as last applied. Migrations run because `preDeploy` was set by an earlier
+`railway config apply`.
 
 ```bash
 railway up --ci \
@@ -56,10 +71,6 @@ railway up --ci \
   --service "$RAILWAY_SERVICE_ID" \
   --environment "$RAILWAY_ENVIRONMENT_ID"
 ```
-
-[`.railway/railway.ts`](../.railway/railway.ts) sets `preDeploy` to
-`pnpm db:migrate`. Apply that graph with `railway config apply` when bootstrapping
-or changing infrastructure; `railway up` only ships the build.
 
 ## GitHub Environments and secrets
 
@@ -136,3 +147,8 @@ hosted databases.
    wires `DATABASE_URL`. Set Clerk keys on `web` in the dashboard
 4. Generate a public domain per environment and copy it into GitHub `APP_URL`
 5. Create a Railway token and store it as `RAILWAY_TOKEN` on each GitHub Environment
+
+After that layout is applied, application releases use the Deploy workflow
+(`railway up`). Run `railway config plan` / `apply` again only when
+[`.railway/railway.ts`](../.railway/railway.ts) changes, and do that before the
+application deploy that depends on the change.

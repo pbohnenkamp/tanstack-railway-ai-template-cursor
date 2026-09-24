@@ -15,31 +15,36 @@ branch model.
 
 - Trunk-based development with PR gates on `main`.
 - One required status check that rolls up lint, types, build, tests, and SAST.
-- Railway remains the deploy target (Nitro + [`.railway/railway.ts`](../../.railway/railway.ts)).
-- Manual promotion through stage and production; automatic deploy of `main` to `dev`.
+- Railway remains the host for the Nitro server.
+- Infrastructure stays manual: `railway config plan` / `apply` of
+  [`.railway/railway.ts`](../../.railway/railway.ts) per environment. Workflows
+  leave that step to the CLI.
+- Application deploys run `railway up`. Manual promotion through stage and
+  production; automatic deploy of `main` to `dev`.
 - Feature branches may optionally overwrite shared `dev` after CI is green.
 - Smoke tests hit the real environment URL and stay read-only.
 
 ## Considered Options
 
 1. **GitFlow / release branches** with auto-deploy of every environment.
-2. **Trunk-based** with GitHub Actions CI, GitHub Environments, Railway CLI deploys,
-   CodeQL, and post-deploy Playwright smoke.
+2. **Trunk-based** with GitHub Actions CI, GitHub Environments, `railway up`
+   deploys, CodeQL, and post-deploy Playwright smoke.
 3. **Ephemeral per-PR Railway environments** instead of a shared `dev`.
 
 ## Decision Outcome
 
 **Chosen: option 2.**
 
-| Concern | Choice                                                                               |
-| ------- | ------------------------------------------------------------------------------------ |
-| Git     | Feature branches → PR → `main`                                                       |
-| CI      | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) aggregator job `CI`     |
-| SAST    | GitHub CodeQL (`javascript-typescript`)                                              |
-| Deploy  | [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml) + Railway CLI   |
-| Envs    | Railway environments `dev` / `stage` / `production`, mirrored as GitHub Environments |
-| Promote | `main`→`dev` automatic; `stage` and `production` manual with prior-env SHA checks    |
-| Smoke   | [`tests/smoke/`](../../tests/smoke/) via `pnpm test:smoke` (no writes)               |
+| Concern        | Choice                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Git            | Feature branches → PR → `main`                                                          |
+| CI             | [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) aggregator job `CI`        |
+| SAST           | GitHub CodeQL (`javascript-typescript`)                                                 |
+| Infrastructure | Manual `railway config plan` / `apply` per environment. Workflows leave this to the CLI |
+| Deploy         | [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml) runs `railway up`  |
+| Envs           | Railway environments `dev` / `stage` / `production`, mirrored as GitHub Environments    |
+| Promote        | `main`→`dev` automatic; `stage` and `production` manual with prior-env SHA checks       |
+| Smoke          | [`tests/smoke/`](../../tests/smoke/) via `pnpm test:smoke` (no writes)                  |
 
 Shared `dev` is overwritten by feature-branch deploys (one active preview). Ephemeral
 preview environments are out of scope for this template.
@@ -49,6 +54,11 @@ preview environments are out of scope for this template.
 - Template consumers must configure GitHub branch protection, Environments, and Railway
   secrets (see [`TEMPLATE_CHECKLIST.md`](../../TEMPLATE_CHECKLIST.md) §7 and
   [`docs/ci-cd.md`](../ci-cd.md)).
+- Changing [`.railway/railway.ts`](../../.railway/railway.ts) requires
+  `railway config plan` / `apply` on each affected environment. Application
+  releases ship a build with `railway up` and leave the project graph as last
+  applied. `preDeploy` (`pnpm db:migrate`) runs on those releases because an
+  earlier apply set it.
 - Mutating e2e scenarios stay in local/CI Playwright against ephemeral Postgres — not
   against shared hosted environments.
 - Progression to production requires a successful GitHub Deployment record for the same

@@ -90,11 +90,14 @@ until the shape settles. Nothing shared may be reached that way.
 
 **Deploying**
 
-[`.railway/railway.ts`](../../.railway/railway.ts) runs `pnpm db:migrate` as `preDeploy` on the
-`web` service, so pending migrations are applied before the new container starts serving. A failed
-migration fails the release rather than starting an application against a schema it does not match.
-The same file provisions Postgres and sets `DATABASE_URL` on `web`. Higher environments never use
-`compose.yaml`.
+`railway config apply` of [`.railway/railway.ts`](../../.railway/railway.ts) provisions Postgres,
+sets `DATABASE_URL` on `web`, and records `preDeploy` as `pnpm db:migrate`. That apply is
+infrastructure, separate from shipping the app.
+
+Each application deploy (`railway up`, from GitHub Actions) runs that `preDeploy` command, so
+pending migrations are applied before the new container starts serving. A failed migration fails
+the release rather than starting an application against a schema it does not match. Higher
+environments never use `compose.yaml`.
 
 ## Why seed data is not part of database startup
 

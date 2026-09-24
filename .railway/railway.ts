@@ -1,7 +1,7 @@
 import { defineRailway, postgres, project, service } from 'railway/iac'
 
 /**
- * Railway Infrastructure as Code (replaces railway.toml).
+ * Railway Infrastructure as Code.
  * Evaluated by the Railway CLI, not the app: `railway config plan` / `apply`.
  * Omit a resource and apply means delete it — see .railway/README.md.
  */

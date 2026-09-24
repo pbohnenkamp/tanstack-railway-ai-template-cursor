@@ -4,19 +4,20 @@
 `web` service (Nitro) and a `postgres` database, with `DATABASE_URL` wired and
 `preDeploy` running `pnpm db:migrate` before traffic (ADR-0003).
 
-Railway [config-as-code](https://docs.railway.com/config-as-code) (`railway.toml`)
-is deprecated and stops being read on **2026-12-01**. Do not add it back.
+## Infrastructure and application deploys
 
-## Apply is not a deploy
+Applying this file and shipping the app are separate processes.
 
-| Command                       | What it does                                           |
-| ----------------------------- | ------------------------------------------------------ |
-| `railway config plan`         | Diff this file against the **linked** environment      |
-| `railway config apply`        | Create/update/delete services, databases, and settings |
-| `railway up` / GitHub Actions | Ship a build of the app                                |
+| Command                | What it does                                                | When                                                                     |
+| ---------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `railway config plan`  | Diff this file against the **linked** environment           | Before every apply                                                       |
+| `railway config apply` | Create, update, or delete services, databases, and settings | Bootstrap, and again only when this file changes. A manual CLI step      |
+| `railway up`           | Ship a build of the app                                     | Every release, from GitHub Actions ([`docs/ci-cd.md`](../docs/ci-cd.md)) |
 
-Code still deploys with `railway up` (see [`docs/ci-cd.md`](../docs/ci-cd.md)).
-Apply once per environment when you bootstrap or change infrastructure.
+`railway config apply` writes settings onto the services, including `preDeploy`
+(`pnpm db:migrate`). Each `railway up` then runs that command before the new
+container serves traffic. The deploy workflow leaves the project graph as last
+applied.
 
 Requires Railway CLI **5.42.1+**. Railpack is the default builder; Node 22 comes
 from [`.node-version`](../.node-version) and `package.json` `engines.node`.
@@ -46,12 +47,3 @@ railway config pull --force
 
 Then copy `build` / `start` / `preDeploy` / healthcheck / restart settings from
 this template into the pulled file, keep the live service names, and apply.
-
-If the service is still owned by a leftover `railway.toml`, migrate first so IaC
-can manage it:
-
-```bash
-railway config migrate --apply --delete-files
-railway config plan
-railway config apply
-```

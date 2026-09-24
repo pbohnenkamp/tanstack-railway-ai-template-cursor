@@ -67,8 +67,9 @@ first use.
 `drizzle/` is the fastest way to confirm the migrations actually describe the schema.
 
 Deployed environments provide their own managed Postgres (Railway Postgres for this template).
-[`.railway/railway.ts`](../../.railway/railway.ts) provisions that database and sets `DATABASE_URL`
-on the `web` service. They never read `compose.yaml`.
+`railway config apply` of [`.railway/railway.ts`](../../.railway/railway.ts) provisions that
+database and sets `DATABASE_URL` on the `web` service. Application deploys (`railway up`) connect
+to the database that apply already provisioned. Hosted environments never read `compose.yaml`.
 
 ### The driver choice is load-bearing
 
