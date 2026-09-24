@@ -1,11 +1,38 @@
 Welcome to your new TanStack Start app!
 
+# Creating an app
+
+Mark this repository as a GitHub template (`Settings` → `Template repository`),
+then create a new app from it:
+
+```bash
+gh repo create my-app \
+  --template pbohnenkamp/tanstack-railway-ai-template-cursor \
+  --private --clone
+```
+
+That copies the files into a new repo with a fresh git history. `origin` points
+at your app, not at this template.
+
+For a local folder with no GitHub remote yet:
+
+```bash
+git clone --depth 1 git@github.com:pbohnenkamp/tanstack-railway-ai-template-cursor.git my-app
+cd my-app
+rm -rf .git
+git init
+```
+
+Do not leave `origin` pointed at the template. Treat the copy as a snapshot;
+when the template improves, copy specific files or patterns by hand.
+
+Then work through [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) (Clerk,
+database, branding, demos, CI/CD).
+
 # Getting Started
 
-> **New app from this template?** Work through
-> [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) (Clerk, database, branding,
-> demos). Clerk auth is bypassed until real keys are configured so you can
-> explore the UI immediately.
+> Clerk auth is bypassed until real keys are configured so you can explore the
+> UI immediately. Do not ship in that state.
 
 To run this application:
 
@@ -79,20 +106,26 @@ The build output is a self-contained Node server under `.output/`.
 
 ### Railway
 
-[`railway.toml`](./railway.toml) runs `pnpm db:migrate` as `preDeployCommand` so
-pending Drizzle migrations apply before the new container serves traffic. Provision
-a Railway Postgres plugin/service, set `DATABASE_URL` on the app from that
-service, and deploy. See [ADR-0003](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
+Infrastructure and application deploys are separate.
 
-The app requires **Node 22+** (Vite 8 / Nitro). Nixpacks picks that up from
+[`.railway/railway.ts`](./.railway/railway.ts) is the project graph: a `web`
+service and Postgres, with `DATABASE_URL` wired and `preDeploy` set to
+`pnpm db:migrate`. Apply that graph manually, once per environment, with
+`railway config plan` / `railway config apply` when you bootstrap and again
+only when the file changes. See [`.railway/README.md`](./.railway/README.md)
+and [ADR-0003](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
+
+Application releases ship a build with `railway up`. Trunk-based GitHub Actions
+does that: auto-deploy `main` → `dev`, then manual promotion to stage and
+production, then post-deploy smoke. Migrations run on those deploys because an
+earlier apply set `preDeploy`. See [`docs/ci-cd.md`](./docs/ci-cd.md) and
+[ADR-0007](./docs/adr/0007-ci-cd-trunk-based.md). Complete
+[`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) §7 when bootstrapping a new
+app.
+
+The app requires **Node 22+** (Vite 8 / Nitro). Railpack picks that up from
 [`.node-version`](./.node-version) and `package.json` `engines.node` — same major
 as GitHub Actions CI.
-
-For trunk-based GitHub Actions CI/CD (lint, tests, CodeQL, auto-deploy `main`→`dev`,
-manual promote to stage/production, post-deploy smoke), see
-[`docs/ci-cd.md`](./docs/ci-cd.md) and [ADR-0007](./docs/adr/0007-ci-cd-trunk-based.md).
-Complete [`TEMPLATE_CHECKLIST.md`](./TEMPLATE_CHECKLIST.md) §7 when bootstrapping a
-new app.
 
 For other host-specific presets and tuning, see https://v3.nitro.build/deploy.
 

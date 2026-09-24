@@ -25,6 +25,7 @@ export default [
       '.output/**',
       '.tanstack/**',
       '.nitro/**',
+      '.railway/**',
     ],
   },
   ...storybook.configs['flat/recommended'],

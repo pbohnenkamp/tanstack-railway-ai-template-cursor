@@ -15,6 +15,9 @@ todos.json
 *storybook.log
 storybook-static
 
+# Railway CLI link state (keep .railway/railway.ts and README in git)
+.railway/config.json
+
 # Playwright
 /test-results/
 /playwright-report/

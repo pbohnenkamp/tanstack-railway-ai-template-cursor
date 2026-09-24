@@ -29,8 +29,10 @@ bypass is active.
 ## Local database
 
 Postgres for local development comes from `compose.yaml` (Compose Spec). Higher
-environments set `DATABASE_URL` to Railway (or other managed) Postgres and never
-use the compose file.
+environments use Railway Postgres from `.railway/railway.ts` (`DATABASE_URL` on
+`web`) and never use the compose file. Provision that database with
+`railway config apply`. Application deploys (`railway up`) use the database
+that apply already created.
 
 ```bash
 pnpm db:up      # start container, wait for health

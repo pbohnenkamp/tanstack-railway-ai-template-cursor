@@ -41,8 +41,11 @@ Keys and wiring live in:
 ## 3. Configure the database (Postgres + Drizzle)
 
 Local Postgres runs from [`compose.yaml`](./compose.yaml) (Compose Spec). Deployed
-environments set `DATABASE_URL` to Railway (or other managed) Postgres — they never
-use the compose file. See [`docs/adr/0004`](./docs/adr/0004-postgres-with-drizzle.md)
+environments use Railway Postgres from [`.railway/railway.ts`](./.railway/railway.ts)
+and never use the compose file. Provision that hosted database in **§7 Railway
+infrastructure**, after the Railway project exists: `railway config plan` /
+`apply` per environment wires `DATABASE_URL` and sets `preDeploy` to
+`pnpm db:migrate`. See [`docs/adr/0004`](./docs/adr/0004-postgres-with-drizzle.md)
 and [`docs/adr/0003`](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 
 - [ ] Ensure `.env.local` has `DATABASE_URL` matching `compose.yaml`
@@ -53,8 +56,6 @@ and [`docs/adr/0003`](./docs/adr/0003-schema-source-of-truth-and-migrations.md).
 - [ ] For schema changes that will ship: `pnpm db:generate`, review `drizzle/`, then
       `pnpm db:migrate` — commit schema + migrations together (ADR-0003)
 - [ ] Smoke-test `/demo/drizzle` or your first data route
-- [ ] For Railway: provision Postgres, set `DATABASE_URL` on the app service,
-      confirm `railway.toml` `preDeployCommand` runs `pnpm db:migrate`
 
 Scripts: `db:up` / `db:down` / `db:reset` / `db:setup` / `db:generate` /
 `db:migrate` / `db:seed` / `db:push` / `db:studio`.
@@ -102,8 +103,24 @@ Scripts: `db:up` / `db:down` / `db:reset` / `db:setup` / `db:generate` /
 ## 7. CI/CD (GitHub Actions + Railway)
 
 See [`docs/ci-cd.md`](./docs/ci-cd.md) and [ADR-0007](./docs/adr/0007-ci-cd-trunk-based.md).
-Workflows alone cannot configure GitHub or Railway — complete these before treating
-hosted environments as real.
+
+Infrastructure and application deploys are separate processes. Finish **Railway
+infrastructure** before **GitHub Environments** and before the first application
+deploy.
+
+- **Infrastructure** — manual `railway config plan`, then `railway config apply`,
+  once per environment at bootstrap and again only when
+  [`.railway/railway.ts`](./.railway/railway.ts) changes. Apply creates and
+  updates services, databases, and settings, including `preDeploy`
+  (`pnpm db:migrate`). Leave it as a CLI step outside the workflows below.
+- **Application deploy** — GitHub Actions runs `railway up`, which ships a build
+  of this repo. Push to `main` auto-deploys **dev**. **stage** and
+  **production** are manual and follow `dev` → `stage` → `production` for the
+  same commit. Migrations run on that deploy because an earlier apply set
+  `preDeploy`.
+
+Workflows alone cannot configure GitHub or Railway — complete this section
+before treating hosted environments as real.
 
 ### Workflows & branch protection
 
@@ -115,18 +132,26 @@ hosted environments as real.
 - [ ] Protect `main`: dismiss stale reviews on new pushes
 - [ ] For production apps: disable admin bypass of branch protection
 
-### Railway
+### Railway infrastructure
+
+Apply can delete any service [`.railway/railway.ts`](./.railway/railway.ts)
+omits. Plan before you apply.
 
 - [ ] Create one Railway project with three environments: `dev`, `stage`,
       `production`
+- [ ] Install Railway CLI **5.42.1+**, then `railway login` and `railway link`
+- [ ] Confirm [`.railway/railway.ts`](./.railway/railway.ts) service names match
+      the dashboard (`web`, `postgres`) — or `railway config pull` and copy
+      settings into the live names. Applying this file as-is against differently
+      named services will create `web`/`postgres` and **delete** omitted ones
+- [ ] `railway config plan` then `railway config apply` for **each** environment
+      (`dev`, `stage`, `production`)
 - [ ] Confirm the build uses **Node 22+** (`.node-version` / `engines.node` —
       Vite 8 fails on Node 18 with `styleText` missing from `node:util`)
-- [ ] Provision Postgres (or attach) per environment; set `DATABASE_URL` on each
-      app service environment
-- [ ] Set Clerk keys (and any other app secrets) on each Railway environment —
-      production uses a production Clerk instance
-- [ ] Confirm [`railway.toml`](./railway.toml) `preDeployCommand` runs
-      `pnpm db:migrate`
+- [ ] Set Clerk keys (and any other app secrets) on the `web` service in each
+      Railway environment — not in the IaC file. Production uses a production
+      Clerk instance
+- [ ] Confirm `preDeploy` is `pnpm db:migrate`
 - [ ] Generate a public domain (or custom domain) per environment
 
 ### GitHub Environments
@@ -138,13 +163,25 @@ hosted environments as real.
 - [ ] On `stage` / `production`: enable required reviewers (optional wait timer on
       production)
 
-### First deploys
+### First application deploys
+
+These ship the app with `railway up` through **Actions → Deploy**. They use the
+infrastructure last applied above.
 
 - [ ] Merge to `main` and confirm auto-deploy to Railway `dev` + smoke pass
 - [ ] Manually run **Deploy** → `stage`, then `production`, and confirm progression
       guards + smoke
 - [ ] Optionally: deploy a feature branch to `dev` via `workflow_dispatch` after CI
       is green (this **overwrites** shared `dev`)
+
+### After the first deploy
+
+Application releases stay on the Deploy workflow (`railway up`): push to `main`
+for **dev**, then manual promotion to **stage** and **production**.
+
+When [`.railway/railway.ts`](./.railway/railway.ts) changes, run
+`railway config plan` then `railway config apply` on each affected environment
+before the application deploy that depends on that change.
 
 ## Agent notes
 
@@ -165,4 +202,6 @@ When an agent starts work on a fresh clone of this template:
 6. Testing: unit-majority pyramid (ADR-0006). Integration uses `app_test` on
    Compose; do not point it at `app`. See `docs/testing-strategy.md`.
 7. When bootstrapping a deployable app, complete **§7 CI/CD** before treating
-   `dev` / `stage` / `production` as real environments.
+   `dev` / `stage` / `production` as real environments. `railway config apply`
+   is manual infrastructure (bootstrap, and later when `.railway/railway.ts`
+   changes). Application releases use the Deploy workflow (`railway up`).
